@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSON;
 /*
     alipay.trade.precreate(统一收单线下交易预创建)
  */
-public class PrecreateReqParam {
+public class AliPayPrecreateReqParam {
     /*
         订单号
      */
@@ -43,7 +43,20 @@ public class PrecreateReqParam {
         取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）。
         该参数数值不接受小数点， 如 1.5h，需转换为 90m。
      */
-    private String qr_code_timeout_express;
+    private String qr_code_timeout_express = "30m";
+
+    public AliPayPrecreateReqParam(String out_trade_no, String total_amount, String subject, String qr_code_timeout_express) {
+        this.out_trade_no = out_trade_no;
+        this.total_amount = total_amount;
+        this.subject = subject;
+        this.qr_code_timeout_express = qr_code_timeout_express;
+    }
+
+    public AliPayPrecreateReqParam(String out_trade_no, String total_amount, String subject) {
+        this.out_trade_no = out_trade_no;
+        this.total_amount = total_amount;
+        this.subject = subject;
+    }
 
     public String getOut_trade_no() {
         return out_trade_no;
