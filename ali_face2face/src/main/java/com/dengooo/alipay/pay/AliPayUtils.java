@@ -29,7 +29,7 @@ public class AliPayUtils {
         return new AliPayUtils(aliPayConfig);
     }
     /*
-        预下单
+        预下单，返回支付二维码
      */
     public AlipayTradePrecreateResponse prePay(AliPayPrecreateReqParam alipayPrecreateReqParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -141,6 +141,24 @@ public class AliPayUtils {
         AlipayTradePayResponse response = null;
         try {
             response = alipayClient.execute(request);
+            logger.log(Level.INFO, JSON.toJSONString(response));
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    /*
+        预下单，一个支付宝支付的页面，用户扫码支付完成之后，回重定向到return_url
+     */
+    public AlipayTradePagePayResponse prePagePay(AlipayTradePagePayReqParam alipayTradePagePayReqParam){
+        AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
+        AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
+        request.setBizContent(alipayTradePagePayReqParam.toString());
+        request.setNotifyUrl(aliPayConfig.getNotifyUrl());
+        request.setReturnUrl(aliPayConfig.getReturnUrl());
+        AlipayTradePagePayResponse response = null;
+        try {
+            response = alipayClient.pageExecute(request);
             logger.log(Level.INFO, JSON.toJSONString(response));
         } catch (AlipayApiException e) {
             e.printStackTrace();

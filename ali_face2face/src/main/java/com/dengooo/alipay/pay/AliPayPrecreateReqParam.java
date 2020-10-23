@@ -19,22 +19,6 @@ public class AliPayPrecreateReqParam {
      */
     private String subject;
     /*
-        商品ID
-     */
-    private String goods_id;
-    /*
-        商品名称
-     */
-    private String goods_name;
-    /*
-        商品数量
-     */
-    private String quantity;
-    /*
-        商品单价
-     */
-    private String price;
-    /*
         商品描述
      */
     private String body;
@@ -80,38 +64,6 @@ public class AliPayPrecreateReqParam {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public String getGoods_id() {
-        return goods_id;
-    }
-
-    public void setGoods_id(String goods_id) {
-        this.goods_id = goods_id;
-    }
-
-    public String getGoods_name() {
-        return goods_name;
-    }
-
-    public void setGoods_name(String goods_name) {
-        this.goods_name = goods_name;
-    }
-
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public String getBody() {

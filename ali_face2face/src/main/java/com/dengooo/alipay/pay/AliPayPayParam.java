@@ -27,22 +27,7 @@ public class AliPayPayParam {
         订单总金额
      */
     private String total_amount;
-    /*
-        商品的编号
-     */
-    private String goods_id;
-    /*
-        商品名称
-     */
-    private String goods_name;
-    /*
-        商品数量
-     */
-    private String quantity;
-    /*
-        商品单价
-     */
-    private String price;
+
 
     public AliPayPayParam(String out_trade_no, String auth_code, String subject, String total_amount) {
         this.out_trade_no = out_trade_no;
@@ -57,18 +42,6 @@ public class AliPayPayParam {
         this.auth_code = auth_code;
         this.subject = subject;
         this.total_amount = total_amount;
-    }
-
-    public AliPayPayParam(String out_trade_no, String scene, String auth_code, String subject, String total_amount, String goods_id, String goods_name, String quantity, String price) {
-        this.out_trade_no = out_trade_no;
-        this.scene = scene;
-        this.auth_code = auth_code;
-        this.subject = subject;
-        this.total_amount = total_amount;
-        this.goods_id = goods_id;
-        this.goods_name = goods_name;
-        this.quantity = quantity;
-        this.price = price;
     }
 
     public String getOut_trade_no() {
@@ -111,37 +84,6 @@ public class AliPayPayParam {
         this.total_amount = total_amount;
     }
 
-    public String getGoods_id() {
-        return goods_id;
-    }
-
-    public void setGoods_id(String goods_id) {
-        this.goods_id = goods_id;
-    }
-
-    public String getGoods_name() {
-        return goods_name;
-    }
-
-    public void setGoods_name(String goods_name) {
-        this.goods_name = goods_name;
-    }
-
-    public String getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
 
     @Override
     public String toString() {

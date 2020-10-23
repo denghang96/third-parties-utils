@@ -29,34 +29,38 @@ public class TestMainDemo {
         aliPayConfig.setUid("2088102179998071");
 
         final AliPayUtils aliPayUtils = AliPayUtils.build(aliPayConfig);
-//        //预下单，返回二维码字符串
+        //预下单，返回二维码字符串
 //        AliPayPrecreateReqParam alipayPrecreateReqParam
-//                = new AliPayPrecreateReqParam("5", "0.01","订单标题");
+//                = new AliPayPrecreateReqParam("6", "0.01","订单标题");
 //        aliPayUtils.prePay(alipayPrecreateReqParam);
 
 
-//        //查询支付结果
-//        AliPayQueryParam aliPayQueryParam = new AliPayQueryParam("1", "");
+        //查询支付结果
+//        AliPayQueryParam aliPayQueryParam = new AliPayQueryParam("6", "");
 //        aliPayUtils.query(aliPayQueryParam);
 
-        //撤销订单
-//        AliPayCancelParam aliPayCancelParam = new AliPayCancelParam("1", "");
+//        撤销订单
+//        AliPayCancelParam aliPayCancelParam = new AliPayCancelParam("7", "");
 //        aliPayUtils.cancel(aliPayCancelParam);
 
-        //关闭订单
-//        AliPayCloseParam aliPayCloseParam = new AliPayCloseParam("2", "");
+//        关闭订单
+//        AliPayCloseParam aliPayCloseParam = new AliPayCloseParam("7", "");
 //        aliPayUtils.close(aliPayCloseParam);
 
-        //退款
-//        AliPayRefundParam aliPayRefundParam = new AliPayRefundParam("xxx", "4" ,"" ,"0.4");
+//        退款
+//        AliPayRefundParam aliPayRefundParam = new AliPayRefundParam("6", "6" ,"" ,"0.01");
 //        aliPayUtils.refund(aliPayRefundParam);
 
-        //退款查询
-//        AliPayRefundQueryParam aliPayRefundQueryParam = new AliPayRefundQueryParam("3","","");
+////        退款查询
+//        AliPayRefundQueryParam aliPayRefundQueryParam = new AliPayRefundQueryParam("6","","");
 //        aliPayUtils.refundQuery(aliPayRefundQueryParam);
 
-        //用户出示自己的付款二维码发起支付
-//        AliPayPayParam aliPayRefundQueryParam = new AliPayPayParam("4", "285665238914566802", "订单的一个标题", "0.4");
-//        aliPayUtils.pay(aliPayRefundQueryParam);
+//        用户出示自己的付款二维码发起支付
+//        AliPayPayParam aliPayPayParam = new AliPayPayParam("7", "285361958610536474", "订单的一个标题", "0.01");
+//        aliPayUtils.pay(aliPayPayParam);
+
+        //调用此方法，返回支付宝支付的一个页面，这个页面是支付宝自己的一套逻辑，用户扫码完成之后返回到return_url
+//        AlipayTradePagePayReqParam alipayTradePagePayReqParam = new AlipayTradePagePayReqParam("8", "0.01", "订单的一个标题", "订单的描述");
+//        aliPayUtils.prePagePay(alipayTradePagePayReqParam);
     }
 }
