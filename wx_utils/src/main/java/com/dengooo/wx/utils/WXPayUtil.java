@@ -1,6 +1,7 @@
 package com.dengooo.wx.utils;
 
 import com.dengooo.wx.utils.WXPayConstants.SignType;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -14,12 +15,20 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class WXPayUtil {
@@ -291,5 +300,84 @@ public class WXPayUtil {
     public static long getCurrentTimestampMs() {
         return System.currentTimeMillis();
     }
-
+    /*
+        对象转Map
+     */
+    public static <T> Map<String, String> obj2Map(T var){
+        Map<String, String> strMap = new HashMap<>();
+        Field[] superFields = var.getClass().getSuperclass().getDeclaredFields();
+        Field[] declaredFields = var.getClass().getDeclaredFields();
+        Field[] totalFields = new Field[superFields.length + declaredFields.length];
+        System.arraycopy(superFields, 0, totalFields,0, superFields.length);
+        System.arraycopy(declaredFields, 0, totalFields,superFields.length, declaredFields.length);
+        for (Field field : totalFields) {
+            field.setAccessible(true);
+            try {
+                if (field.get(var) != null) {
+                    strMap.put(field.getName(), (String) field.get(var));
+                }
+            } catch (IllegalAccessException e) {
+                getLogger().info("{} can't accessible", field.getName());
+                e.printStackTrace();
+            }
+        }
+        return strMap;
+    }
+    /*
+        Map转对象
+     */
+    public static <T> T map2Obj(Map<String,String> map,Class<T> tClass) {
+//        T t = null;
+//        try {
+//            t = tClass.newInstance();
+//        } catch (InstantiationException | IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//        Field[] superFields = tClass.getSuperclass().getDeclaredFields();
+//        Field[] declaredFields = tClass.getDeclaredFields();
+//        Field[] totalFields = new Field[superFields.length + declaredFields.length];
+//        System.arraycopy(superFields, 0, totalFields,0, superFields.length);
+//        System.arraycopy(declaredFields, 0, totalFields,superFields.length, declaredFields.length);
+//        for (Field field : totalFields) {
+//            try {
+//                String methodName = "set" + field.getName().substring(0,1).toUpperCase()+field.getName().substring(1);
+//                Method setMethod =
+//                field.set(t,field.getName(), map.get(field.getName()));
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return t;
+        T t = null;
+        try {
+            t = tClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        BeanInfo beanInfo = null;
+        try {
+            beanInfo = Introspector.getBeanInfo(tClass);
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        List<PropertyDescriptor> descriptors = Arrays.stream(beanInfo.getPropertyDescriptors()).filter(p -> {
+            String name = p.getName();
+            //过滤掉不需要修改的属性
+            return !"class".equals(name) && !"id".equals(name);
+        }).collect(Collectors.toList());
+        for (PropertyDescriptor descriptor : descriptors) {
+//            Method readMethod = descriptor.getReadMethod();方法对应get方法
+            Method writeMethod = descriptor.getWriteMethod();
+            String propertyName = descriptor.getName();
+            try {
+                if (map.get(propertyName) != null) {
+                    writeMethod.invoke(t, map.get(propertyName));
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return t;
+    }
 }
