@@ -1,44 +1,44 @@
 package com.dengooo.alipay.config;
 
 public class AliPayConfig {
-    /*
-        应用公钥
+    /**
+     *  应用公钥
      */
     private String appPublicKey;
-    /*
-        支付宝公钥
+    /**
+     *  支付宝公钥
      */
     private String aliPayPublicKey;
-    /*
-        应用私钥
+    /**
+     *  应用私钥
      */
     private String appPrivateKey;
-    /*
-        加密方式 建议RSA2
+    /**
+     *  加密方式 建议RSA2
      */
     private String signType;
-    /*
-        appId
+    /**
+     *  appId
      */
     private String appId;
-    /*
-        支付宝网关
+    /**
+     *  支付宝网关
      */
     private String gateWay;
-    /*
-        商户UID
+    /**
+     *  商户UID
      */
     private String uid;
-    /*
-        请求使用的编码格式
+    /**
+     *  请求使用的编码格式
      */
     private String charset;
-    /*
-        支付宝服务器主动通知商户服务器里指定的页面http/https路径。
+    /**
+     *  支付宝服务器主动通知商户服务器里指定的页面http/https路径。
      */
     private String notifyUrl;
-    /*
-        页面返回的Url
+    /**
+     *  页面返回的Url
      */
     private String returnUrl;
 

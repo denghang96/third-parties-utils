@@ -28,8 +28,8 @@ public class AliPayUtils {
     public static AliPayUtils build(AliPayConfig aliPayConfig) {
         return new AliPayUtils(aliPayConfig);
     }
-    /*
-        预下单，返回支付二维码
+    /**
+     *   预下单，返回支付二维码
      */
     public AlipayTradePrecreateResponse prePay(AliPayPrecreateReqParam alipayPrecreateReqParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -46,8 +46,8 @@ public class AliPayUtils {
         }
         return response;
     }
-    /*
-        查询支付状态
+    /**
+     *   查询支付状态
      */
     public AlipayTradeQueryResponse query(AliPayQueryParam aliPayQueryParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -62,8 +62,8 @@ public class AliPayUtils {
         }
         return response;
     }
-    /*
-        撤销订单
+    /**
+     *   撤销订单
      */
     public AlipayTradeCancelResponse cancel(AliPayCancelParam aliPayCancelParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -79,9 +79,10 @@ public class AliPayUtils {
         return response;
     }
 
-    /*
-        主动关闭订单，用于交易创建后，用户在一定时间内未进行支付，可调用该接口直接将未付款的交易进行关闭。
-        也可以在预下单时传入一个时间参数，到时间后会自动关闭订单
+    /**
+     *
+     *   主动关闭订单，用于交易创建后，用户在一定时间内未进行支付，可调用该接口直接将未付款的交易进行关闭。
+     *   也可以在预下单时传入一个时间参数，到时间后会自动关闭订单
      */
     public AlipayTradeCloseResponse close(AliPayCloseParam aliPayCloseParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -97,8 +98,8 @@ public class AliPayUtils {
         return response;
     }
 
-    /*
-        退款
+    /**
+     *   退款
      */
     public AlipayTradeRefundResponse refund(AliPayRefundParam aliPayRefundParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -114,8 +115,8 @@ public class AliPayUtils {
         return response;
     }
 
-    /*
-        退款查询
+    /**
+     *   退款查询
      */
     public AlipayTradeFastpayRefundQueryResponse refundQuery(AliPayRefundQueryParam aliPayRefundQueryParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -131,8 +132,8 @@ public class AliPayUtils {
         return response;
     }
 
-    /*
-        扫描用户支付二维码发起支付
+    /**
+     *  扫描用户支付二维码发起支付
      */
     public AlipayTradePayResponse pay(AliPayPayParam aliPayPayParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);
@@ -147,8 +148,8 @@ public class AliPayUtils {
         }
         return response;
     }
-    /*
-        预下单，一个支付宝支付的页面，用户扫码支付完成之后，回重定向到return_url
+    /**
+     *   预下单，一个支付宝支付的页面，用户扫码支付完成之后，回重定向到return_url
      */
     public AlipayTradePagePayResponse prePagePay(AlipayTradePagePayReqParam alipayTradePagePayReqParam){
         AlipayClient alipayClient = AliPayClientExtend.getInstance(aliPayConfig);

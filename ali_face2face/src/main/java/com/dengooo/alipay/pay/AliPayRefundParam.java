@@ -6,21 +6,21 @@ import com.alibaba.fastjson.JSON;
  * 退款参数
  */
 public class AliPayRefundParam {
-    /*
-        商户订单号
+    /**
+     *   商户订单号
      */
     private String out_trade_no;
-    /*
-        支付宝流水号
+    /**
+     *   支付宝流水号
      */
     private String trade_no;
-    /*
-        退款金额
+    /**
+     *   退款金额
      */
     private String refund_amount;
 
-    /*
-        本次退款的请求编号
+    /**
+     *   本次退款的请求编号
      */
     private String out_request_no;
 

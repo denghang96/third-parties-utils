@@ -7,20 +7,20 @@ import com.alipay.api.internal.util.StringUtils;
  * 退款结果查询参数
  */
 public class AliPayRefundQueryParam {
-    /*
-        商户流水号
+    /**
+     *   商户流水号
      */
     private String out_trade_no;
-    /*
-        支付宝支付流水号
+    /**
+     *   支付宝支付流水号
      */
     private String trade_no;
-    /*
-        退款请求的编号
+    /**
+     *   退款请求的编号
      */
     private String out_request_no;
-    /*
-        查询选项，商户通过上送该参数来定制同步需要额外返回的信息字段，数组格式。如：["refund_detail_item_list"]
+    /**
+     *   查询选项，商户通过上送该参数来定制同步需要额外返回的信息字段，数组格式。如：["refund_detail_item_list"]
      */
     private String[] query_options;
 

@@ -6,26 +6,26 @@ import com.alibaba.fastjson.JSON;
     alipay.trade.precreate(统一收单线下交易预创建)
  */
 public class AliPayPrecreateReqParam {
-    /*
-        订单号
+    /**
+     *  订单号
      */
     private String out_trade_no;
-    /*
-        总金额
+    /**
+     *  总金额
      */
     private String total_amount;
-    /*
-        订单标题
+    /**
+     *   订单标题
      */
     private String subject;
-    /*
-        商品描述
+    /**
+     *  商品描述
      */
     private String body;
-    /*
-        该笔订单允许的最晚付款时间，逾期将关闭交易，从生成二维码开始计时。
-        取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）。
-        该参数数值不接受小数点， 如 1.5h，需转换为 90m。
+    /**
+     *  该笔订单允许的最晚付款时间，逾期将关闭交易，从生成二维码开始计时。
+     *  取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）。
+     *  该参数数值不接受小数点， 如 1.5h，需转换为 90m。
      */
     private String qr_code_timeout_express = "30m";
 

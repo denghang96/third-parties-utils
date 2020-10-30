@@ -6,12 +6,12 @@ import com.alibaba.fastjson.JSON;
  * 关闭订单参数
  */
 public class AliPayCloseParam {
-    /*
-        支付宝交易流水号
+    /**
+     *   支付宝交易流水号
      */
     private String trade_no;
-    /*
-        商户订单号
+    /**
+     *   商户订单号
      */
     private String out_trade_no;
 
