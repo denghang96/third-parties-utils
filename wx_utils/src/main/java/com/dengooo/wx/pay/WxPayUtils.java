@@ -1,9 +1,8 @@
 package com.dengooo.wx.pay;
 
 import com.dengooo.wx.config.WxPayInitConfig;
-import com.dengooo.wx.req.PayReqBaseVo;
-import com.dengooo.wx.req.UnifiedOrderReqVo;
-import com.dengooo.wx.resp.UnifiedOrderRespVo;
+import com.dengooo.wx.req.*;
+import com.dengooo.wx.resp.*;
 import com.dengooo.wx.utils.WXPayConstants;
 import com.dengooo.wx.utils.WXPayUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -39,35 +38,63 @@ public class WxPayUtils {
     public static WxPayUtils build(WxPayInitConfig wxPayInitConfig) {
         return new WxPayUtils(wxPayInitConfig);
     }
-    /*
-        预下单/统一下单
+    /**
+     *   预下单/统一下单
      */
     public UnifiedOrderRespVo unifiedorder(UnifiedOrderReqVo unifiedOrderReqVo){
-
         if (StringUtils.isEmpty(unifiedOrderReqVo.getNotify_url())) {
             unifiedOrderReqVo.setNotify_url(wxPayInitConfig.getNotifyUrl());
         }
-
-        assignmentParams(unifiedOrderReqVo);
-
-        Map<String, String> strMap = WXPayUtil.obj2Map(unifiedOrderReqVo);
-        String mapWithSign = toWithSignXmlStr(strMap);
-
         String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
-        final String responseStr = sendPostXml(url, mapWithSign);
+        return postAndGetRespVo(url, unifiedOrderReqVo,UnifiedOrderRespVo.class);
+    }
 
-        UnifiedOrderRespVo unifiedOrderRespVo = new UnifiedOrderRespVo();
+    /**
+     *  查询订单
+     */
+    public OrderQueryRespVo orderQuery(OrderQueryReqVo orderQueryReqVo) {
+        String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.ORDERQUERY_URL_SUFFIX;
+        return postAndGetRespVo(url, orderQueryReqVo,OrderQueryRespVo.class);
+    }
+    /**
+     *   关闭订单
+     */
+    public OrderCloseRespVo orderClose(OrderCloseReqVo orderCloseReqVo) {
+        String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.CLOSEORDER_URL_SUFFIX;
+        return postAndGetRespVo(url, orderCloseReqVo,OrderCloseRespVo.class);
+    }
+    /**
+     *  退款
+     */
+    public OrderRefundRespVo refund(OrderRefundReqVo orderRefundReqVo) {
+        String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.REFUND_URL_SUFFIX;
+        return postAndGetRespVo(url, orderRefundReqVo,OrderRefundRespVo.class);
+    }
+
+    /**
+     *   各个接口调用统一的步骤
+     */
+    private  <T extends PayReqBaseVo, R extends PayRespBaseVo> R postAndGetRespVo(String url, T son, Class<R> clazz) {
+        //将请求对象的参数补充完整
+        assignmentParams(son);
+        //将对象转map
+        final Map<String, String> strMap = WXPayUtil.obj2Map(son);
+        //将map转成带有签名的xml
+        final String mapWithSign = toWithSignXmlStr(strMap);
+        //发送HTTPS请求，并返回一个XML字符串
+        final String respStr = sendPostXml(url, mapWithSign);
+        R r = null;
         try {
-            Map<String, String> respStrMap = WXPayUtil.xmlToMap(responseStr);
-            unifiedOrderRespVo = WXPayUtil.map2Obj(respStrMap, UnifiedOrderRespVo.class);
-            logger.info("unifiedorder resp : {}", unifiedOrderRespVo.toString());
+            Map<String, String> respStrMap = WXPayUtil.xmlToMap(respStr);
+            r = WXPayUtil.map2Obj(respStrMap, clazz);
+            logger.info("unifiedorder resp : {}", r.toString());
         }catch (Exception e) {
             e.printStackTrace();
         }
-        return unifiedOrderRespVo;
+        return r;
     }
-    /*
-        完善请求对象的参数，用来将其转成XML
+    /**
+     *  完善请求对象的参数，用来将其转成XML
      */
     private <T extends PayReqBaseVo> void assignmentParams(T son) {
         son.setAppid(wxPayInitConfig.getAppId());
@@ -80,8 +107,8 @@ public class WxPayUtils {
         }
     }
 
-    /*
-        将strMap转换成带有签名的XML字符串
+    /**
+     *  将strMap转换成带有签名的XML字符串
      */
     private <T extends PayReqBaseVo> String toWithSignXmlStr(Map<String, String> strMap) {
         String mapWithSign = "";
@@ -103,8 +130,8 @@ public class WxPayUtils {
             throw new RuntimeException("签名发生错误，签名为空");
         }
     }
-    /*
-        发送请求
+    /**
+     *  发送请求
      */
     private String sendPostXml(String url, String mapWithSign) {
         CloseableHttpClient httpClient = null;

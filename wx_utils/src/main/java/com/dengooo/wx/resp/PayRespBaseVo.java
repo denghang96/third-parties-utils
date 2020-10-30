@@ -1,14 +1,41 @@
 package com.dengooo.wx.resp;
 
-public class PayRespBaseVo {
+public class PayRespBaseVo{
+    /**
+     *   随机字符串
+     */
     protected String nonce_str;
+    /**
+     *  appid
+     */
     protected String appid;
+    /**
+     *   签名
+     */
     protected String sign;
+    /**
+     *   商户号
+     */
     protected String mch_id;
+    /**
+     *  响应代码
+     */
     protected String return_code;
+    /**
+     *   响应代码对应中文释义
+     */
     protected String return_msg;
+    /**
+     *   业务代码
+     */
     protected String result_code;
+    /**
+     *   错误信息描述
+     */
     protected String err_code_des;
+    /**
+     *   错误代码
+     */
     protected String err_code;
 
     public String getNonce_str() {

@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class WXPayUtil {
+public class WXPayUtil<R> {
 
     private static final String SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -300,8 +300,8 @@ public class WXPayUtil {
     public static long getCurrentTimestampMs() {
         return System.currentTimeMillis();
     }
-    /*
-        对象转Map
+    /**
+     *   对象转Map
      */
     public static <T> Map<String, String> obj2Map(T var){
         Map<String, String> strMap = new HashMap<>();
@@ -323,42 +323,16 @@ public class WXPayUtil {
         }
         return strMap;
     }
-    /*
-        Map转对象
+    /**
+     *   Map转对象
      */
     public static <T> T map2Obj(Map<String,String> map,Class<T> tClass) {
-//        T t = null;
-//        try {
-//            t = tClass.newInstance();
-//        } catch (InstantiationException | IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//        Field[] superFields = tClass.getSuperclass().getDeclaredFields();
-//        Field[] declaredFields = tClass.getDeclaredFields();
-//        Field[] totalFields = new Field[superFields.length + declaredFields.length];
-//        System.arraycopy(superFields, 0, totalFields,0, superFields.length);
-//        System.arraycopy(declaredFields, 0, totalFields,superFields.length, declaredFields.length);
-//        for (Field field : totalFields) {
-//            try {
-//                String methodName = "set" + field.getName().substring(0,1).toUpperCase()+field.getName().substring(1);
-//                Method setMethod =
-//                field.set(t,field.getName(), map.get(field.getName()));
-//            } catch (IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        return t;
         T t = null;
-        try {
-            t = tClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
         BeanInfo beanInfo = null;
         try {
+            t = tClass.newInstance();
             beanInfo = Introspector.getBeanInfo(tClass);
-        } catch (IntrospectionException e) {
+        } catch (InstantiationException | IllegalAccessException | IntrospectionException e) {
             e.printStackTrace();
         }
         List<PropertyDescriptor> descriptors = Arrays.stream(beanInfo.getPropertyDescriptors()).filter(p -> {

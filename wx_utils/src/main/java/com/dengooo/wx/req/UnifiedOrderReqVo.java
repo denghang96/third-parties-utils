@@ -8,40 +8,40 @@ import java.security.InvalidParameterException;
 
 public class UnifiedOrderReqVo extends PayReqBaseVo{
 
-    /*
-        交易截止时间，非必传格式为yyyyMMddHHmmss，因小于两小时
+    /**
+     *  交易截止时间，非必传格式为yyyyMMddHHmmss，因小于两小时
      */
     private String time_expire;
-    /*
-        商品描述
+    /**
+     *   商品描述
      */
     private String body;
-    /*
-        商户订单号
+    /**
+     *   商户订单号
      */
     private String out_trade_no;
-    /*
-        订单总金额，单位为分
+    /**
+     *   订单总金额，单位为分
      */
     private String total_fee;
-    /*
-        异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
+    /**
+     *   异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
      */
     private String notify_url;
-    /*
-        交易类型
-        JSAPI -JSAPI支付  --->
-        NATIVE -Native支付 --->扫码
-        APP -APP支付  --->APP拉起微信支付
-        MWEB--H5支付  --->非微信内部的网页拉起微信支付
+    /**
+     *  交易类型
+     *   JSAPI -JSAPI支付  --->
+     *   NATIVE -Native支付 --->扫码
+     *   APP -APP支付  --->APP拉起微信支付
+     *   MWEB--H5支付  --->非微信内部的网页拉起微信支付
      */
     private String trade_type;
-    /*
-        商品ID,如果trade_type是NATIVE，此参数毕传
+    /**
+     *   商品ID,如果trade_type是NATIVE，此参数毕传
      */
     private String product_id;
-    /*
-        如果trade_type是NATIVE是JSAPI，此参数毕传
+    /**
+     *   如果trade_type是NATIVE是JSAPI，此参数毕传
      */
     private String openid;
 

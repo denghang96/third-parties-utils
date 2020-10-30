@@ -1,8 +1,22 @@
 package com.dengooo.wx.resp;
 
 public class UnifiedOrderRespVo extends PayRespBaseVo{
+    /**
+     *   二维码地址
+     */
     private String code_url;
+    /**
+     *
+     *   交易类型
+     *   JSAPI -JSAPI支付  --->
+     *   NATIVE -Native支付 --->扫码
+     *   APP -APP支付  --->APP拉起微信支付
+     *   MWEB--H5支付  --->非微信内部的网页拉起微信支付
+     */
     private String trade_type;
+    /**
+     *   预支付交易会话标识
+     */
     private String prepay_id;
 
     public String getCode_url() {
