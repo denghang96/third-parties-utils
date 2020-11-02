@@ -1,7 +1,5 @@
 package com.dengooo.wx.req;
 
-import com.dengooo.wx.config.WxPayInitConfig;
-import com.dengooo.wx.utils.WXPayConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.security.InvalidParameterException;

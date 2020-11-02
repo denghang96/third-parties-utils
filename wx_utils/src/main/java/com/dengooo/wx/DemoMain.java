@@ -15,14 +15,14 @@ public class DemoMain {
     public static void main(String[] args) {
         WxPayInitConfig wxPayInitConfig = new WxPayInitConfig();
         WxPayUtils wxPayUtils = WxPayUtils.build(wxPayInitConfig);
-//        UnifiedOrderReqVo unifiedOrderReqVo = new UnifiedOrderReqVo("第一个商品", "202010291606", "1", "NATIVE", "1");
+//        UnifiedOrderReqVo unifiedOrderReqVo = new UnifiedOrderReqVo("第一个商品", "202011021338", "1", "NATIVE", "1");
 //        wxPayUtils.unifiedorder(unifiedOrderReqVo);
 //        OrderQueryReqVo orderQueryReqVo = new OrderQueryReqVo("", "202010291606");
 //        OrderQueryRespVo orderQueryRespVo = wxPayUtils.orderQuery(orderQueryReqVo);
-//        OrderCloseReqVo orderCloseReqVo = new OrderCloseReqVo("202010291606");
+//        OrderCloseReqVo orderCloseReqVo = new OrderCloseReqVo("202011021338");
 //        OrderCloseRespVo orderCloseRespVo = wxPayUtils.orderClose(orderCloseReqVo);
-        OrderRefundReqVo orderRefundReqVo
-                = new OrderRefundReqVo("","202010291606","1","1","1");
-        OrderRefundRespVo orderRefundRespVo = wxPayUtils.refund(orderRefundReqVo);
+//        OrderRefundReqVo orderRefundReqVo
+//                = new OrderRefundReqVo("","202011021337","1","1","1");
+//        OrderRefundRespVo orderRefundRespVo = wxPayUtils.refund(orderRefundReqVo);
     }
 }

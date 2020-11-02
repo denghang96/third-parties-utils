@@ -1,7 +1,6 @@
-package com.dengooo.wx.utils;
+package com.dengooo.wx.sdk;
 
-import com.dengooo.wx.sdk.WXPayConstants;
-import com.dengooo.wx.sdk.WXPayXmlUtil;
+import com.dengooo.wx.sdk.WXPayConstants.SignType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -15,23 +14,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
-public class WXPayUtil<R> {
+public class WXPayUtil {
 
     private static final String SYMBOLS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -119,7 +110,7 @@ public class WXPayUtil<R> {
      * @return 含有sign字段的XML
      */
     public static String generateSignedXml(final Map<String, String> data, String key) throws Exception {
-        return generateSignedXml(data, key, WXPayConstants.SignType.MD5);
+        return generateSignedXml(data, key, SignType.MD5);
     }
 
     /**
@@ -130,7 +121,7 @@ public class WXPayUtil<R> {
      * @param signType 签名类型
      * @return 含有sign字段的XML
      */
-    public static String generateSignedXml(final Map<String, String> data, String key, WXPayConstants.SignType signType) throws Exception {
+    public static String generateSignedXml(final Map<String, String> data, String key, SignType signType) throws Exception {
         String sign = generateSignature(data, key, signType);
         data.put(WXPayConstants.FIELD_SIGN, sign);
         return mapToXml(data);
@@ -163,7 +154,7 @@ public class WXPayUtil<R> {
      * @throws Exception
      */
     public static boolean isSignatureValid(Map<String, String> data, String key) throws Exception {
-        return isSignatureValid(data, key, WXPayConstants.SignType.MD5);
+        return isSignatureValid(data, key, SignType.MD5);
     }
 
     /**
@@ -175,7 +166,7 @@ public class WXPayUtil<R> {
      * @return 签名是否正确
      * @throws Exception
      */
-    public static boolean isSignatureValid(Map<String, String> data, String key, WXPayConstants.SignType signType) throws Exception {
+    public static boolean isSignatureValid(Map<String, String> data, String key, SignType signType) throws Exception {
         if (!data.containsKey(WXPayConstants.FIELD_SIGN) ) {
             return false;
         }
@@ -191,7 +182,7 @@ public class WXPayUtil<R> {
      * @return 签名
      */
     public static String generateSignature(final Map<String, String> data, String key) throws Exception {
-        return generateSignature(data, key, WXPayConstants.SignType.MD5);
+        return generateSignature(data, key, SignType.MD5);
     }
 
     /**
@@ -202,7 +193,7 @@ public class WXPayUtil<R> {
      * @param signType 签名方式
      * @return 签名
      */
-    public static String generateSignature(final Map<String, String> data, String key, WXPayConstants.SignType signType) throws Exception {
+    public static String generateSignature(final Map<String, String> data, String key, SignType signType) throws Exception {
         Set<String> keySet = data.keySet();
         String[] keyArray = keySet.toArray(new String[keySet.size()]);
         Arrays.sort(keyArray);
@@ -215,10 +206,10 @@ public class WXPayUtil<R> {
                 sb.append(k).append("=").append(data.get(k).trim()).append("&");
         }
         sb.append("key=").append(key);
-        if (WXPayConstants.SignType.MD5.equals(signType)) {
+        if (SignType.MD5.equals(signType)) {
             return MD5(sb.toString()).toUpperCase();
         }
-        else if (WXPayConstants.SignType.HMACSHA256.equals(signType)) {
+        else if (SignType.HMACSHA256.equals(signType)) {
             return HMACSHA256(sb.toString(), key);
         }
         else {
@@ -299,60 +290,6 @@ public class WXPayUtil<R> {
      */
     public static long getCurrentTimestampMs() {
         return System.currentTimeMillis();
-    }
-    /**
-     *   对象转Map
-     */
-    public static <T> Map<String, String> obj2Map(T var){
-        Map<String, String> strMap = new HashMap<>();
-        Field[] superFields = var.getClass().getSuperclass().getDeclaredFields();
-        Field[] declaredFields = var.getClass().getDeclaredFields();
-        Field[] totalFields = new Field[superFields.length + declaredFields.length];
-        System.arraycopy(superFields, 0, totalFields,0, superFields.length);
-        System.arraycopy(declaredFields, 0, totalFields,superFields.length, declaredFields.length);
-        for (Field field : totalFields) {
-            field.setAccessible(true);
-            try {
-                if (field.get(var) != null) {
-                    strMap.put(field.getName(), (String) field.get(var));
-                }
-            } catch (IllegalAccessException e) {
-                getLogger().info("{} can't accessible", field.getName());
-                e.printStackTrace();
-            }
-        }
-        return strMap;
-    }
-    /**
-     *   Map转对象
-     */
-    public static <T> T map2Obj(Map<String,String> map,Class<T> tClass) {
-        T t = null;
-        BeanInfo beanInfo = null;
-        try {
-            t = tClass.newInstance();
-            beanInfo = Introspector.getBeanInfo(tClass);
-        } catch (InstantiationException | IllegalAccessException | IntrospectionException e) {
-            e.printStackTrace();
-        }
-        List<PropertyDescriptor> descriptors = Arrays.stream(beanInfo.getPropertyDescriptors()).filter(p -> {
-            String name = p.getName();
-            //过滤掉不需要修改的属性
-            return !"class".equals(name) && !"id".equals(name);
-        }).collect(Collectors.toList());
-        for (PropertyDescriptor descriptor : descriptors) {
-//            Method readMethod = descriptor.getReadMethod();方法对应get方法
-            Method writeMethod = descriptor.getWriteMethod();
-            String propertyName = descriptor.getName();
-            try {
-                if (map.get(propertyName) != null) {
-                    writeMethod.invoke(t, map.get(propertyName));
-                }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-        return t;
     }
 
 }

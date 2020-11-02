@@ -121,4 +121,29 @@ public class OrderRefundRespVo extends PayRespBaseVo{
     public void setCash_refund_fee(String cash_refund_fee) {
         this.cash_refund_fee = cash_refund_fee;
     }
+
+    @Override
+    public String toString() {
+        return "OrderRefundRespVo{" +
+                "transaction_id='" + transaction_id + '\'' +
+                ", out_refund_no='" + out_refund_no + '\'' +
+                ", refund_id='" + refund_id + '\'' +
+                ", cash_fee='" + cash_fee + '\'' +
+                ", out_trade_no='" + out_trade_no + '\'' +
+                ", coupon_refund_fee='" + coupon_refund_fee + '\'' +
+                ", refund_fee='" + refund_fee + '\'' +
+                ", total_fee='" + total_fee + '\'' +
+                ", coupon_refund_count='" + coupon_refund_count + '\'' +
+                ", cash_refund_fee='" + cash_refund_fee + '\'' +
+                ", nonce_str='" + nonce_str + '\'' +
+                ", appid='" + appid + '\'' +
+                ", sign='" + sign + '\'' +
+                ", mch_id='" + mch_id + '\'' +
+                ", return_code='" + return_code + '\'' +
+                ", return_msg='" + return_msg + '\'' +
+                ", result_code='" + result_code + '\'' +
+                ", err_code_des='" + err_code_des + '\'' +
+                ", err_code='" + err_code + '\'' +
+                '}';
+    }
 }

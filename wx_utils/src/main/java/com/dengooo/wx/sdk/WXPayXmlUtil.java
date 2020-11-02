@@ -1,4 +1,4 @@
-package com.dengooo.wx.utils;
+package com.dengooo.wx.sdk;
 
 import org.w3c.dom.Document;
 
