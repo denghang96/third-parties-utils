@@ -31,6 +31,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.dengooo.wx.sdk.WXPayConstants.USER_AGENT;
@@ -114,6 +116,50 @@ public class WxPayUtils {
         return null;
     }
 
+    public OrderRefundQueryRespVo refundQuery(OrderRefundQueryReqVo orderRefundQueryReqVo) {
+        String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.REFUNDQUERY_URL_SUFFIX;
+        assignmentParams(orderRefundQueryReqVo);
+        //将对象转map
+        final Map<String, String> strMap = WXPayUtil.obj2Map(orderRefundQueryReqVo);
+        //将map转成带有签名的xml
+        final String mapWithSign = toWithSignXmlStr(strMap);
+        //发送HTTPS请求，并返回一个XML字符串
+        String respStr = null;
+        try {
+            respStr = this.sendPostXml(url,mapWithSign);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        OrderRefundQueryRespVo orderRefundRespVo = null;
+        try {
+            Map<String, String> respStrMap = WXPayUtil.xmlToMap(respStr);
+            WXPayConstants.SignType signType = "MD5".equals(wxPayInitConfig.getSignType())? WXPayConstants.SignType.MD5:WXPayConstants.SignType.HMACSHA256;
+            if (WXPayUtil.isSignatureValid(respStrMap, wxPayInitConfig.getKey(), signType)) {
+                orderRefundRespVo = WXPayUtil.map2Obj(respStrMap, OrderRefundQueryRespVo.class);
+                int refundCount = Integer.parseInt(respStrMap.get("refund_count"));
+                List<RefundQueryDataRespVo> refundQueryDataRespVos = new ArrayList<>();
+                for (int i = 0; i < refundCount; i++) {
+                    RefundQueryDataRespVo refundQueryDataRespVo = new RefundQueryDataRespVo();
+                    refundQueryDataRespVo.setOut_refund_no(respStrMap.get("out_refund_no_"+i));
+                    refundQueryDataRespVo.setRefund_account(respStrMap.get("refund_account_"+i));
+                    refundQueryDataRespVo.setRefund_channel(respStrMap.get("refund_channel_"+i));
+                    refundQueryDataRespVo.setRefund_fee(respStrMap.get("refund_fee_"+i));
+                    refundQueryDataRespVo.setRefund_id(respStrMap.get("refund_id_"+i));
+                    refundQueryDataRespVo.setRefund_recv_accout(respStrMap.get("refund_recv_accout_"+i));
+                    refundQueryDataRespVo.setRefund_status(respStrMap.get("refund_status_"+i));
+                    refundQueryDataRespVo.setRefund_success_time(respStrMap.get("refund_success_time_"+i));
+                    refundQueryDataRespVos.add(refundQueryDataRespVo);
+                }
+                orderRefundRespVo.setRefundQueryDataRespVos(refundQueryDataRespVos);
+                logger.info("refund resp : {}", orderRefundRespVo.toString());
+                return orderRefundRespVo;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 各个接口调用统一的步骤
      */
@@ -126,13 +172,14 @@ public class WxPayUtils {
         final String mapWithSign = toWithSignXmlStr(strMap);
         //发送HTTPS请求，并返回一个XML字符串
         final String respStr = sendPostXml(url, mapWithSign);
+        logger.info("respStr : {}", respStr);
         R r = null;
         try {
             Map<String, String> respStrMap = WXPayUtil.xmlToMap(respStr);
             WXPayConstants.SignType signType = "MD5".equals(wxPayInitConfig.getSignType())? WXPayConstants.SignType.MD5:WXPayConstants.SignType.HMACSHA256;
             if (WXPayUtil.isSignatureValid(respStrMap, wxPayInitConfig.getKey(), signType)) {
                 r = WXPayUtil.map2Obj(respStrMap, clazz);
-                logger.info("unifiedorder resp : {}", r.toString());
+                logger.info("resp : {}", r.toString());
                 return r;
             }
         } catch (Exception e) {
