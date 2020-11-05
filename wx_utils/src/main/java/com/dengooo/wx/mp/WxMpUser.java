@@ -126,6 +126,19 @@ public abstract class WxMpUser {
     }
 
     /**
+     * 不想一步一步调用，直接使用本方法获取初始化微信公众号JSSDK初始化参数
+     * @param appId
+     * @param appSecret
+     * @param autoSetAccessTokenIntoMemory
+     * @param autoSetJsApiTicketIntoMemory
+     * @return
+     */
+    public MpInitParam easyGetMpToolInitParams(String appId, String appSecret , boolean autoSetAccessTokenIntoMemory, boolean autoSetJsApiTicketIntoMemory) {
+        AccessToken accessToken = this.getAccessToken(appId, appSecret, autoSetAccessTokenIntoMemory);
+        JsApiTicket jsApiTicket = this.getJsApiTicket(accessToken.getAccess_token(),autoSetJsApiTicketIntoMemory);
+        return this.getMpToolInitParams(jsApiTicket.getTicket(), appId);
+    }
+    /**
      * 获取openid
      * @param appId
      * @param appSecret

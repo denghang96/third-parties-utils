@@ -8,7 +8,7 @@ public class MpInitParam {
     private String nonceStr;
     private String signature;
     private String timestamp;
-    private String url;
+//    private String url;
 
     public String getAppId() {
         return appId;
@@ -41,14 +41,14 @@ public class MpInitParam {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+//
+//    public String getUrl() {
+//        return url;
+//    }
+//
+//    public void setUrl(String url) {
+//        this.url = url;
+//    }
 
     @Override
     public String toString() {

@@ -36,7 +36,7 @@ public class DemoMain {
 //                = new OrderRefundQueryReqVo("","202011021340","","");
 //        OrderRefundQueryRespVo orderRefundQueryRespVo = wxPayUtils.refundQuery(orderRefundQueryReqVo);
 
-//        Test test = new Test();
+        Test test = new Test();
         //获取系统层面的AccessToken
 //        AccessToken accessToken = test.getAccessToken("", "");
 //        System.out.println(accessToken.toString());
@@ -44,10 +44,10 @@ public class DemoMain {
 //        JsApiTicket jsApiTicket = test.getJsApiTicket(accessToken.getAccess_token());
 //        System.out.println(jsApiTicket.toString());
         //通过JsApiTicket获取微信公众号初始化所需要的参数
-//        MpInitParam mpInitParam = test.getMpToolInitParams(jsApiTicket.getTicket(), "wxc1c7fb04f60aeadb");
+//        MpInitParam mpInitParam = test.getMpToolInitParams(jsApiTicket.getTicket(), "");
 //        System.out.println(mpInitParam.toString());
 
-//        OpenIdVo openIdVo = test.getOpenId("", "", "");
-//        System.out.println(openIdVo.toString());
+        OpenIdVo openIdVo = test.getOpenId("", "", "");
+        System.out.println(openIdVo.toString());
     }
 }
