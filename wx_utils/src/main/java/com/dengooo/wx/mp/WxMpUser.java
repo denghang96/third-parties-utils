@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.dengooo.wx.resp.AccessToken;
 import com.dengooo.wx.resp.JsApiTicket;
 import com.dengooo.wx.resp.MpInitParam;
+import com.dengooo.wx.resp.OpenIdVo;
 import com.dengooo.wx.utils.HttpUtils;
 import com.dengooo.wx.utils.WXPayUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,7 @@ public abstract class WxMpUser {
     private final String GRANT_TYPE = "client_credential";
     private final String TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token";
     private final String GET_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+    private final String GET_OPEN_ID_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
 
     /**
      * access_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token。
@@ -81,7 +83,6 @@ public abstract class WxMpUser {
         JsApiTicket jsApiTicket = getJsApiTicketFromMemory();
         // ticket is Empty 从新获取
         if (jsApiTicket == null || StringUtils.isEmpty(jsApiTicket.getTicket())) {
-            // 如果不是empty, 直接使用redis中的token获取jsapi
             Map<String, String> params = new HashMap<>();
             params.put("access_token", access_token);
             params.put("type", "jsapi");
@@ -95,13 +96,13 @@ public abstract class WxMpUser {
     }
 
     /**
-     * 获取初始化的参数，只有拿到了这些参数以后，才能通过接口获取到openId
-     * @param url
+     * 获取微信公众号工具初始化的参数，只有拿到了这些参数以后，才能使用微信公众号的API。
+     * 到了授权页面前端人员才能拿到微信返回的5分钟有效的Code
      * @param ticket
      * @param appId
      * @return
      */
-    public MpInitParam getInitParams(String url, String ticket, String appId) {
+    public MpInitParam getMpToolInitParams(String ticket, String appId) {
         // 使用jsapiTicket签名用于初始化配置
         String nonceStr = WXPayUtil.generateNonceStr();
         // 获时间戳
@@ -111,7 +112,6 @@ public abstract class WxMpUser {
         packageParams.put("noncestr", nonceStr);
         packageParams.put("jsapi_ticket", ticket);
         packageParams.put("timestamp", timestamp);
-        packageParams.put("url", url);
         // 获得拼接好的参数,按照ASCLL大小排序
         String createLinkString = WXPayUtil.createLinkString(packageParams);
         //SHA1签名,该类继承了weixin4J的WeixinSupport类, 使用的是父类的方法
@@ -122,8 +122,25 @@ public abstract class WxMpUser {
         mpInitParam.setNonceStr(nonceStr);
         mpInitParam.setSignature(signature);
         mpInitParam.setTimestamp(timestamp);
-        mpInitParam.setUrl(url);
         return mpInitParam;
+    }
+
+    /**
+     * 获取openid
+     * @param appId
+     * @param appSecret
+     * @param code 通过用户授权获取到的code 5分钟有效
+     * @return
+     */
+    public OpenIdVo getOpenId(String appId, String appSecret, String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("appid",appId);
+        params.put("secret",appSecret);
+        params.put("code",code);
+        params.put("grant_type","authorization_code");
+        String respStr = HttpUtils.onlyGet(GET_OPEN_ID_URL, params);
+        OpenIdVo openIdVo = JSON.parseObject(respStr, OpenIdVo.class);
+        return openIdVo;
     }
 
     /**
@@ -148,6 +165,7 @@ public abstract class WxMpUser {
      * @return
      */
     protected abstract void setJsApiTicketIntoMemory(JsApiTicket jsApiTicket);
+
 
 
 }

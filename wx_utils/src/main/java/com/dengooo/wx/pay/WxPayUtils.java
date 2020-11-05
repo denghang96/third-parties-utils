@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.security.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class WxPayUtils {
     }
 
     /**
-     * 预下单/统一下单
+     * NATIVE支付预下单/统一下单
      */
     public UnifiedOrderRespVo unifiedorder(UnifiedOrderReqVo unifiedOrderReqVo) {
         if (StringUtils.isEmpty(unifiedOrderReqVo.getNotify_url())) {
@@ -44,6 +45,42 @@ public class WxPayUtils {
         }
         String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
         return postAndGetRespVo(url, unifiedOrderReqVo, UnifiedOrderRespVo.class);
+    }
+
+    /**
+     * JSAPI 微信公众号支付预下单
+     * @param unifiedOrderReqVo
+     * @return
+     */
+    public Map<String, Object> JsApiUnifiedorder(UnifiedOrderReqVo unifiedOrderReqVo) {
+        UnifiedOrderRespVo unifiedOrderRespVo = this.unifiedorder(unifiedOrderReqVo);
+        String appId = unifiedOrderRespVo.getAppid();
+        String nonceStr = unifiedOrderRespVo.getNonce_str();
+        String packageStr = unifiedOrderRespVo.getPrepay_id();
+        long timeStamp = System.currentTimeMillis()/1000;
+        // 拼接chooseWXPay参数
+        String timestamp = "timeStamp";
+        Map<String,String> signParam = new HashMap<>();
+        signParam.put("appId",appId);
+        signParam.put(timestamp, Long.toString(timeStamp));
+        signParam.put("nonceStr",nonceStr);
+        signParam.put("package","prepay_id=" + packageStr);
+        signParam.put("signType", WXPayConstants.SignType.MD5.name());
+        String sign = null;
+        try {
+            sign = WXPayUtil.generateSignature(signParam, wxPayInitConfig.getKey(), WXPayConstants.SignType.MD5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        signParam.put("paySign",sign);
+        signParam.remove("appId");
+        Map<String, Object> map = new HashMap<>(signParam);
+        map.remove(timestamp);
+        map.put("timestamp", timeStamp);
+
+
+        //map最终有nonceStr、package、signType、paySign、timestamp五个Key
+        return map;
     }
 
     /**
