@@ -4,38 +4,17 @@ import com.dengooo.wx.config.WxPayInitConfig;
 import com.dengooo.wx.req.*;
 import com.dengooo.wx.resp.*;
 import com.dengooo.wx.sdk.WXPayConstants;
+import com.dengooo.wx.utils.HttpUtils;
 import com.dengooo.wx.utils.WXPayUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.dengooo.wx.sdk.WXPayConstants.USER_AGENT;
 
 /*
     微信支付
@@ -96,7 +75,7 @@ public class WxPayUtils {
         //发送HTTPS请求，并返回一个XML字符串
         String respStr = null;
         try {
-            respStr = this.sendPostXmlWithCert(url,mapWithSign, 6000, 8000,true);
+            respStr = HttpUtils.sendPostXmlWithCert(url,mapWithSign, 6000, 8000,true,wxPayInitConfig.getMchId(), wxPayInitConfig.getCertFilePath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,7 +105,7 @@ public class WxPayUtils {
         //发送HTTPS请求，并返回一个XML字符串
         String respStr = null;
         try {
-            respStr = this.sendPostXml(url,mapWithSign);
+            respStr = HttpUtils.sendPostXml(url,mapWithSign);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,7 +150,7 @@ public class WxPayUtils {
         //将map转成带有签名的xml
         final String mapWithSign = toWithSignXmlStr(strMap);
         //发送HTTPS请求，并返回一个XML字符串
-        final String respStr = sendPostXml(url, mapWithSign);
+        final String respStr = HttpUtils.sendPostXml(url, mapWithSign);
         logger.info("respStr : {}", respStr);
         R r = null;
         try {
@@ -226,108 +205,4 @@ public class WxPayUtils {
         }
     }
 
-    /**
-     * 发送请求
-     */
-    private String sendPostXml(String url, String mapWithSign) {
-        CloseableHttpClient httpClient = null;
-        try {
-            httpClient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost(url);
-            StringEntity entity = new StringEntity(mapWithSign, "utf-8");
-            httpPost.setHeader("Content-Type", "application/xml");
-            httpPost.setEntity(entity);
-
-            HttpResponse response = httpClient.execute(httpPost);
-
-            HttpEntity responseEntity = response.getEntity();
-            String result = EntityUtils.toString(responseEntity, "UTF-8");
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (httpClient != null) {
-                    httpClient.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    /**
-     *
-     * @param url
-     * @param data
-     * @param connectTimeoutMs
-     * @param readTimeoutMs
-     * @param useCert
-     * @return
-     * @throws Exception
-     */
-    private String sendPostXmlWithCert(final String url, String data, int connectTimeoutMs, int readTimeoutMs, boolean useCert) throws Exception {
-        BasicHttpClientConnectionManager connManager;
-        if (useCert) {
-            // 证书
-            char[] password = wxPayInitConfig.getMchId().toCharArray();
-            InputStream certStream = new FileInputStream(wxPayInitConfig.getCertFilePath());
-            KeyStore ks = KeyStore.getInstance("PKCS12");
-            ks.load(certStream, password);
-
-            // 实例化密钥库 & 初始化密钥工厂
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(ks, password);
-
-            // 创建 SSLContext
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(kmf.getKeyManagers(), null, new SecureRandom());
-
-            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
-                    sslContext,
-                    new String[]{"TLSv1"},
-                    null,
-                    new DefaultHostnameVerifier());
-
-            connManager = new BasicHttpClientConnectionManager(
-                    RegistryBuilder.<ConnectionSocketFactory>create()
-                            .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                            .register("https", sslConnectionSocketFactory)
-                            .build(),
-                    null,
-                    null,
-                    null
-            );
-        }
-        else {
-            connManager = new BasicHttpClientConnectionManager(
-                    RegistryBuilder.<ConnectionSocketFactory>create()
-                            .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                            .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                            .build(),
-                    null,
-                    null,
-                    null
-            );
-        }
-
-        HttpClient httpClient = HttpClientBuilder.create()
-                .setConnectionManager(connManager)
-                .build();
-
-        HttpPost httpPost = new HttpPost(url);
-
-        RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(readTimeoutMs).setConnectTimeout(connectTimeoutMs).build();
-        httpPost.setConfig(requestConfig);
-
-        StringEntity postEntity = new StringEntity(data, "UTF-8");
-        httpPost.addHeader("Content-Type", "text/xml");
-        httpPost.addHeader("User-Agent", USER_AGENT + " " + wxPayInitConfig.getMchId());
-        httpPost.setEntity(postEntity);
-
-        HttpResponse httpResponse = httpClient.execute(httpPost);
-        HttpEntity httpEntity = httpResponse.getEntity();
-        return EntityUtils.toString(httpEntity, "UTF-8");
-    }
 }

@@ -2,16 +2,17 @@ package com.dengooo.wx;
 
 import com.dengooo.wx.config.WxPayInitConfig;
 import com.dengooo.wx.consts.PayType;
+import com.dengooo.wx.mp.Test;
 import com.dengooo.wx.pay.WxPayUtils;
 import com.dengooo.wx.req.*;
 import com.dengooo.wx.resp.*;
 
 public class DemoMain {
     public static void main(String[] args) {
-        WxPayInitConfig wxPayInitConfig = new WxPayInitConfig();
+//        WxPayInitConfig wxPayInitConfig = new WxPayInitConfig();
         //初始化WxPayInitConfig
 //        WxPayInitConfig.setXXX();
-        WxPayUtils wxPayUtils = WxPayUtils.build(wxPayInitConfig);
+//        WxPayUtils wxPayUtils = WxPayUtils.build(wxPayInitConfig);
 //        //NATIVE支付预下单
 //        UnifiedOrderReqVo unifiedOrderReqVo = new UnifiedOrderReqVo("第一个商品", "202011021340", "2", PayType.NATIVE.PAYTYPE, "1");
 //        wxPayUtils.unifiedorder(unifiedOrderReqVo);
@@ -29,5 +30,13 @@ public class DemoMain {
 //                OrderRefundQueryReqVo orderRefundQueryReqVo
 //                = new OrderRefundQueryReqVo("","202011021340","","");
 //        OrderRefundQueryRespVo orderRefundQueryRespVo = wxPayUtils.refundQuery(orderRefundQueryReqVo);
+
+        Test test = new Test();
+        AccessToken accessToken = test.getAccessToken("", "");
+        System.out.println(accessToken.toString());
+        JsApiTicket jsApiTicket = test.getJsApiTicket(accessToken.getAccess_token());
+        System.out.println(jsApiTicket.toString());
+        MpInitParam mpInitParam = test.getInitParams("http://www.dengooo.icu/pay.html", jsApiTicket.getTicket(), "");
+        System.out.println(mpInitParam.toString());
     }
 }

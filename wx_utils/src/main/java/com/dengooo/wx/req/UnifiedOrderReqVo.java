@@ -39,7 +39,7 @@ public class UnifiedOrderReqVo extends PayReqBaseVo{
      */
     private String product_id;
     /**
-     *   如果trade_type是NATIVE是JSAPI，此参数毕传
+     *   如果trade_type是JSAPI，此参数毕传
      */
     private String openid;
 
