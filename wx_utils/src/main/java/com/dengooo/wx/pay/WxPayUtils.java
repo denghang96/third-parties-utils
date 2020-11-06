@@ -48,6 +48,51 @@ public class WxPayUtils {
     }
 
     /**
+     * 付款码支付
+     * @param microPayReqVo
+     * @return
+     */
+    public MicroPayRespVo micropay(MicroPayReqVo microPayReqVo) {
+        String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.MICROPAY_URL_SUFFIX;
+        return postAndGetRespVo(url, microPayReqVo, MicroPayRespVo.class);
+    }
+
+    /**
+     * 撤销订单
+     * @param reverseReqVo
+     * @return
+     */
+    public ReverseRespVo reverse(ReverseReqVo reverseReqVo) {
+        String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.REVERSE_URL_SUFFIX;
+        assignmentParams(reverseReqVo);
+        //将对象转map
+        final Map<String, String> strMap = WXPayUtil.obj2Map(reverseReqVo);
+        //将map转成带有签名的xml
+        final String mapWithSign = toWithSignXmlStr(strMap);
+        //发送HTTPS请求，并返回一个XML字符串
+        String respStr = null;
+        try {
+            respStr = HttpUtils.sendPostXmlWithCert(url,mapWithSign, 6000, 8000,true,wxPayInitConfig.getMchId(), wxPayInitConfig.getCertFilePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ReverseRespVo reverseRespVo = null;
+        try {
+
+            Map<String, String> respStrMap = WXPayUtil.xmlToMap(respStr);
+            WXPayConstants.SignType signType = "MD5".equals(wxPayInitConfig.getSignType())? WXPayConstants.SignType.MD5:WXPayConstants.SignType.HMACSHA256;
+            if (WXPayUtil.isSignatureValid(respStrMap, wxPayInitConfig.getKey(), signType)) {
+                reverseRespVo = WXPayUtil.map2Obj(respStrMap, ReverseRespVo.class);
+                logger.info("refund resp : {}", reverseRespVo.toString());
+                return reverseRespVo;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * JSAPI 微信公众号支付预下单
      * @param unifiedOrderReqVo
      * @return
@@ -132,6 +177,11 @@ public class WxPayUtils {
         return null;
     }
 
+    /**
+     * 退款结果查询
+     * @param orderRefundQueryReqVo
+     * @return
+     */
     public OrderRefundQueryRespVo refundQuery(OrderRefundQueryReqVo orderRefundQueryReqVo) {
         String url = HTTPS_PREFIX + WXPayConstants.DOMAIN_API + WXPayConstants.REFUNDQUERY_URL_SUFFIX;
         assignmentParams(orderRefundQueryReqVo);

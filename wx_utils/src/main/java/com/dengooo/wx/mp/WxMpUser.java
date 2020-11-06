@@ -43,8 +43,8 @@ public abstract class WxMpUser {
 
     /**
      *
-     * @param appId
-     * @param appSecret
+     * @param appId 公众号的appid
+     * @param appSecret 公众号的appSecret
      * @param autoSetAccessTokenIntoMemory 是否在获取accessToken之后调用子类的setAccessTokenIntoMemory方法将accessToken缓存
      * @return
      */
@@ -163,7 +163,7 @@ public abstract class WxMpUser {
     protected abstract AccessToken getAccessTokenFromMemory();
     /**
      * 向缓存中保存AccessToken
-     * @return
+     * @param accessToken AccessToken对象
      */
     protected abstract void setAccessTokenIntoMemory(AccessToken accessToken);
 
@@ -175,7 +175,7 @@ public abstract class WxMpUser {
 
     /**
      * 向缓存中保存JsApiTicket
-     * @return
+     * @param jsApiTicket
      */
     protected abstract void setJsApiTicketIntoMemory(JsApiTicket jsApiTicket);
 

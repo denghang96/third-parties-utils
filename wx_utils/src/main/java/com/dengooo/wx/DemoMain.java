@@ -21,6 +21,14 @@ public class DemoMain {
 //        UnifiedOrderReqVo unifiedOrderReqVo = new UnifiedOrderReqVo("第一个商品", "202011021341", "2", "http://www.dengooo.icu/paysuccess",PayType.JSAPI.PAYTYPE, "1","");
 //        Map<String, Object> putUpWxPayParamMap = wxPayUtils.JsApiUnifiedorder(unifiedOrderReqVo);
 //        System.out.println(putUpWxPayParamMap.toString());
+
+        //付款码支付
+//        MicroPayReqVo microPayReqVo = new MicroPayReqVo("华资-商品", "202011021340", "2", "", "");
+//        wxPayUtils.micropay(microPayReqVo);
+
+        //撤销订单
+//        ReverseReqVo reverseReqVo = new ReverseReqVo("", "202011021340");
+//        wxPayUtils.reverse(reverseReqVo);
         //查询订单
 //        OrderQueryReqVo orderQueryReqVo = new OrderQueryReqVo("", "202010291606");
 //        OrderQueryRespVo orderQueryRespVo = wxPayUtils.orderQuery(orderQueryReqVo);
@@ -36,7 +44,7 @@ public class DemoMain {
 //                = new OrderRefundQueryReqVo("","202011021340","","");
 //        OrderRefundQueryRespVo orderRefundQueryRespVo = wxPayUtils.refundQuery(orderRefundQueryReqVo);
 
-        Test test = new Test();
+//        Test test = new Test();
         //获取系统层面的AccessToken
 //        AccessToken accessToken = test.getAccessToken("", "");
 //        System.out.println(accessToken.toString());
@@ -47,7 +55,7 @@ public class DemoMain {
 //        MpInitParam mpInitParam = test.getMpToolInitParams(jsApiTicket.getTicket(), "");
 //        System.out.println(mpInitParam.toString());
 
-        OpenIdVo openIdVo = test.getOpenId("", "", "");
-        System.out.println(openIdVo.toString());
+//        OpenIdVo openIdVo = test.getOpenId("", "", "");
+//        System.out.println(openIdVo.toString());
     }
 }

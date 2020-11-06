@@ -2,12 +2,12 @@ package com.dengooo.wx.config;
 
 public class WxPayInitConfig {
     /**
-     *
      *   appid是微信公众账号或开放平台APP的唯一标识，
      *   在公众平台申请公众账号或者在开放平台申请APP账号后，
      *  微信会自动分配对应的appid，用于标识该应用。
      *   可在微信公众平台-->开发-->基本配置里面查看，商户的微信支付审核通过邮件中也会包含该字段值。
      *  API参数名 appid
+     *  公众号测试账号申请地址：https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
      */
     private String appId = "";
     /**
